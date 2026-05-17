@@ -1,0 +1,35 @@
+services:
+  lts:
+    image: python:3.11-slim
+    volumes:
+      - ./src:/app/src
+    command: python /app/src/lts.py
+    ports:
+      - "8001:8001"
+      - "8002:8002"
+      - "8003:8003"
+    environment:
+      - RTS_HOST=rts
+    depends_on:
+      - rts
+
+  rts:
+    image: python:3.11-slim
+    volumes:
+      - ./src:/app/src
+    command: python /app/src/rts.py
+    environment:
+      - TIME_SVC_HOST=time_svc
+      - ECHO_SVC_HOST=echo_svc
+
+  time_svc:
+    image: python:3.11-slim
+    volumes:
+      - ./src:/app/src
+    command: python /app/src/service_time.py --port 5001
+
+  echo_svc:
+    image: python:3.11-slim
+    volumes:
+      - ./src:/app/src
+    command: python /app/src/service_echo.py --port 5002
